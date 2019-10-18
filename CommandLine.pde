@@ -5,20 +5,20 @@ class CommandLine {
   String inputCommandCompletion = "";
   boolean devShowing = false;
   boolean devEnabled = false;
-  
-  public final String[] commands = {"maxtri","poscolor","audiodevice","audiomulti","devicelist","audiopow","dev"};
+
+  public final String[] commands = {"maxtri","poscolor","audioin","audioout","audiomulti","devicelist","audiopow","dev"};
 
   Boolean holdingControl = false;
   Boolean holdingShift = false;
   int promptPosition = 0;
-  
-  public void show(int selectedAudioOutput, int soundListLength, float amplitude)
+
+  public void show(int soundListLength, float amplitude)
   {
     if (devShowing)
     {
       fill(255);
       textAlign(LEFT);
-      text(selectedAudioOutput + "/" + (soundListLength-1) + "  " + amplitude, 10, 20);
+      text(selectedAudioInput + "," + selectedAudioOutput + "/" + (soundListLength-1) + "  " + amplitude, 10, 20);
       fill(255);
       text("> " + inputCommand.substring(0, promptPosition) + (((frameCount%50 < 50/2 && devEnabled) ? (promptPosition == inputCommand.length() ? "_" : "|") : (promptPosition == inputCommand.length() ? "" : ":")) + inputCommand.substring(promptPosition, inputCommand.length())), 10, 40);
       fill(200, 75, 50);
@@ -32,7 +32,7 @@ class CommandLine {
       fill(0,0);
     }
   }
-  
+
   public void pressingKey(int keyCode)
   {
     if (keyCode == CONTROL)
@@ -40,27 +40,27 @@ class CommandLine {
       holdingControl = true;
       return;
     }
-  
+
     if (keyCode == SHIFT)
     {
       holdingShift = true;
       return;
     }
-  
+
     if (keyCode == LEFT && promptPosition > 0) promptPosition--;
     if (keyCode == RIGHT && promptPosition < inputCommand.length()) promptPosition++;
-  
+
     if (keyCode == ALT || keyCode == 20 || keyCode == SHIFT || keyCode == 0 || keyCode == 157 || keyCode == LEFT || keyCode == RIGHT) return;
-  
+
     String keyString = str(char(keyCode)).toLowerCase();
-  
+
     if (keyCode == 186) keyString = ";";
     if (keyCode == 191) keyString = "/";
     if (keyCode == 219) keyString = "[";
     if (keyCode == 221) keyString = "]";
     if (keyCode == 188) keyString = ",";
     if (keyCode == 190) keyString = ".";
-  
+
     /*if (holdingControl)
     {
       if (keyString.equals("p"))
@@ -71,7 +71,7 @@ class CommandLine {
       }
       return;
     }*/
-  
+
     if (holdingShift)
     {
       if (keyString.equals(";"))
@@ -79,16 +79,16 @@ class CommandLine {
       else
         keyString = keyString.toUpperCase();
     }
-  
+
     if ((key == ENTER || key == RETURN) && !inputCommand.equals("") && inputCommand.split(" ").length >= 2)
     {
       String inputCommandPart = inputCommand.split(" ")[0];
       String inputCommandValue = inputCommand.split(" ")[1];
-  
+
       inputCommandSuccess = "";
       inputCommandError = "";
       inputCommandCompletion = "";
-  
+
       switch (inputCommandPart.toLowerCase())
       {
         case "maxtri":
@@ -97,7 +97,11 @@ class CommandLine {
         case "poscolor":
           changeColor = boolean(inputCommandValue);
           break;
-        case "audiodevice":
+        case "audioin":
+          selectedAudioInput = parseInt(inputCommandValue);
+          restartSound();
+          break;
+        case "audioout":
           selectedAudioOutput = parseInt(inputCommandValue);
           restartSound();
           break;
@@ -117,12 +121,12 @@ class CommandLine {
           inputCommandError = "Command not found";
           break;
       }
-  
+
       if (inputCommandError.equals("") && inputCommandSuccess.equals(""))
       {
         inputCommandSuccess = "Set " + inputCommandPart + " to " + inputCommandValue;
       }
-  
+
       inputCommand = "";
       promptPosition = 0;
     }
@@ -157,7 +161,7 @@ class CommandLine {
           commandsThatContainSubCommand.add(commands[i]);
         }
       }
-  
+
       if (commandsThatContainSubCommand.size() > 0)
       {
         int equalPrefixSize = 0;
@@ -171,7 +175,7 @@ class CommandLine {
               hasEqualPrefixChar = false;
             }
           }
-  
+
           if (hasEqualPrefixChar)
           {
             equalPrefixSize = i;
@@ -181,24 +185,24 @@ class CommandLine {
             break;
           }
         }
-  
+
         inputCommand = commandsThatContainSubCommand.get(0).substring(0, equalPrefixSize+1) + ((commandsThatContainSubCommand.get(0).length() == equalPrefixSize+1 && commandsThatContainSubCommand.size() == 1) ? " " : "");
         //Add completion results to success selection text
         promptPosition = inputCommand.length();
-  
+
         inputCommandSuccess = "";
         inputCommandError = "";
         inputCommandCompletion = arrayListToString(commandsThatContainSubCommand);
       }
     }
   }
-  
+
   public void releasedKey(int keyCode)
   {
     if (keyCode == CONTROL) holdingControl = false;
     if (keyCode == SHIFT) holdingShift = false;
   }
-  
+
   public String arrayListToString(ArrayList arr)
   {
     String str = "[";
@@ -208,7 +212,7 @@ class CommandLine {
     str += "]";
     return str;
   }
-  
+
   public String arrayToString(Object[] arr)
   {
     String str = "[";
