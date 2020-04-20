@@ -6,7 +6,7 @@ class CommandLine {
   boolean devShowing = false;
   boolean devEnabled = false;
 
-  public final String[] commands = {"maxtri","poscolor","audioin","audioout","audiomulti","devicelist","audiopow","dev"};
+  public final String[] commands = {"maxtri","poscolor","audioin","audioout","audiomulti","devicelist","audiopow","start","dev"};
 
   Boolean holdingControl = false;
   Boolean holdingShift = false;
@@ -80,10 +80,10 @@ class CommandLine {
         keyString = keyString.toUpperCase();
     }
 
-    if ((key == ENTER || key == RETURN) && !inputCommand.equals("") && inputCommand.split(" ").length >= 2)
+    if ((key == ENTER || key == RETURN) && !inputCommand.equals("")/* && inputCommand.split(" ").length >= 2*/)
     {
       String inputCommandPart = inputCommand.split(" ")[0];
-      String inputCommandValue = inputCommand.split(" ")[1];
+      String inputCommandValue = (inputCommand.split(" ").length > 1) ? inputCommand.split(" ")[1] : "0";
 
       inputCommandSuccess = "";
       inputCommandError = "";
@@ -99,11 +99,9 @@ class CommandLine {
           break;
         case "audioin":
           selectedAudioInput = parseInt(inputCommandValue);
-          restartSound();
           break;
         case "audioout":
           selectedAudioOutput = parseInt(inputCommandValue);
-          restartSound();
           break;
         case "audiomulti":
           //audioMulti = parseFloat(inputCommandValue);
@@ -113,6 +111,9 @@ class CommandLine {
           break;
         case "devicelist":
           inputCommandSuccess = arrayToString(soundList);
+          break;
+        case "start":
+          restartSound();
           break;
         case "dev":
           devShowing = boolean(inputCommandValue);
