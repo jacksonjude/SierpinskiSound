@@ -1,4 +1,6 @@
 import processing.sound.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 boolean soundStarted = false;
 Sound s;
@@ -20,8 +22,10 @@ int masterLength;
 CommandLine cl = new CommandLine();
 
 int maxtri = 9;
-boolean changeColor = false;
 STriangle MasterTriangle;
+
+boolean shouldChangeColor = true;
+float colorTimeOffset = 0;
 
 public void setup()
 {
@@ -103,8 +107,18 @@ public void draw()
       fftTrebleAvg += spectrum[i];
     }
     fftTrebleAvg /= spectrum.length-30;
+    
+    if (shouldChangeColor)
+    {
+      double ampOffsetShift = 0.001*Math.pow(ampSound, 1.0/1.5);
+      double bassOffsetShift = 0.01*(Math.pow(7, fftBassAvg)-1);
+      colorTimeOffset += 5*(ampOffsetShift+bassOffsetShift);
+      
+      if (ampOffsetShift+bassOffsetShift > 0.0)
+        println(this.round(ampOffsetShift/(ampOffsetShift+bassOffsetShift), 3), this.round(bassOffsetShift/(ampOffsetShift+bassOffsetShift), 3));
+    }
   
-    cl.show(soundList.length, ampSound);
+    cl.show(soundList.length, (float)this.round(ampSound, 3), (float)this.round(colorTimeOffset, 3));
   
     //fill(fftTrebleAvg*audioWeights[2][0], fftMedAvg*audioWeights[1][0], fftBassAvg*audioWeights[0][0]);
   
@@ -126,7 +140,7 @@ public void draw()
   }
   else
   {
-    cl.show(soundList.length, 0);
+    cl.show(soundList.length, 0, 0);
   }
   
   MasterTriangle.moveBack(2);
@@ -138,4 +152,12 @@ public void keyPressed() {
 
 public void keyReleased() {
   cl.releasedKey(keyCode);
+}
+
+public double round(double value, int places) {
+    if (places < 0) throw new IllegalArgumentException();
+
+    BigDecimal bd = BigDecimal.valueOf(value);
+    bd = bd.setScale(places, RoundingMode.HALF_UP);
+    return bd.doubleValue();
 }

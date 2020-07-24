@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 class STriangle {
   private int truex;
   private int truey;
@@ -17,28 +19,28 @@ class STriangle {
     if (my < masterLength/4) {
       int temp = masterLength/4;
       int tempb = (int)my - 0;
-      stroke(255, (255 * tempb)/temp, 0);
+      changeStrokeColor(255, (255 * tempb)/temp, 0);
     } else if (my < masterLength/2) {
       int temp = masterLength/4;
       if (temp == 0) {
         temp = 1;
       }
       int tempb = (int)my - masterLength/4;
-      stroke(127 - (127 * tempb)/temp, 255, (255 * tempb)/temp);
+      changeStrokeColor(127 - (127 * tempb)/temp, 255, (255 * tempb)/temp);
     } else if (my < masterLength*3/4) {
       int temp = masterLength/4;
       if (temp == 0) {
         temp = 1;
       }
       int tempb = (int)my - masterLength/2;
-      stroke(0, 255 - (255 * tempb)/temp, 255);
+      changeStrokeColor(0, 255 - (255 * tempb)/temp, 255);
     } else {
       int temp = masterLength/4;
       if (temp == 0) {
         temp = 1;
       }
       int tempb = (int)my - masterLength*3/4;
-      stroke(255-(127 * tempb)/temp, 0, 255);
+      changeStrokeColor(255-(127 * tempb)/temp, 0, 255);
     }
     beginShape();
     vertex(mx+leng/2, my);
@@ -83,61 +85,62 @@ class STriangle {
   }
   public void move() {
     float colorY = truey-heightOffset;
-    if (!changeColor) {
-      if (colorY < masterLength/4) {
-        int temp = masterLength/4;
-        int tempb = (int)colorY - 0;
-        stroke(255, (255 * tempb)/temp, 0);
-      } else if (colorY < masterLength/2) {
-        int temp = masterLength/4;
-        if (temp == 0) {
-          temp = 1;
-        }
-        int tempb = (int)colorY - masterLength/4;
-        stroke(127 - (127 * tempb)/temp, 255, (255 * tempb)/temp);
-      } else if (colorY < masterLength*3/4) {
-        int temp = masterLength/4;
-        if (temp == 0) {
-          temp = 1;
-        }
-        int tempb = (int)colorY - masterLength/2;
-        stroke(0, 255 - (255 * tempb)/temp, 255);
-      } else {
-        int temp = masterLength/4;
-        if (temp == 0) {
-          temp = 1;
-        }
-        int tempb = (int)colorY - masterLength*3/4;
-        stroke(255-(127 * tempb)/temp, 0, 255);
+    //if (false) {
+      //if (colorY < masterLength/4) {
+      //  int temp = masterLength/4;
+      //  int tempb = (int)colorY - 0;
+      //  changeStrokeColor(255, (255 * tempb)/temp, 0);
+      //} else if (colorY < masterLength/2) {
+      //  int temp = masterLength/4;
+      //  if (temp == 0) {
+      //    temp = 1;
+      //  }
+      //  int tempb = (int)colorY - masterLength/4;
+      //  changeStrokeColor(127 - (127 * tempb)/temp, 255, (255 * tempb)/temp);
+      //} else if (colorY < masterLength*3/4) {
+      //  int temp = masterLength/4;
+      //  if (temp == 0) {
+      //    temp = 1;
+      //  }
+      //  int tempb = (int)colorY - masterLength/2;
+      //  changeStrokeColor(0, 255 - (255 * tempb)/temp, 255);
+      //} else {
+      //  int temp = masterLength/4;
+      //  if (temp == 0) {
+      //    temp = 1;
+      //  }
+      //  int tempb = (int)colorY - masterLength*3/4;
+      //  changeStrokeColor(255-(127 * tempb)/temp, 0, 255);
+      //}
+    //} else {
+      
+    if (colorY < masterLength/4) {
+      int temp = masterLength/4;
+      int tempb = (int)colorY - 0;
+      changeStrokeColor(255, (255 * tempb)/temp, 0);
+    } else if (colorY < masterLength/2) {
+      int temp = masterLength/4;
+      if (temp == 0) {
+        temp = 1;
       }
+      int tempb = (int)colorY - masterLength/4;
+      changeStrokeColor(127 - (127 * tempb)/temp, 255, (255 * tempb)/temp);
+    } else if (colorY < masterLength*3/4) {
+      int temp = masterLength/4;
+      if (temp == 0) {
+        temp = 1;
+      }
+      int tempb = (int)colorY - masterLength/2;
+      changeStrokeColor(0, 255 - (255 * tempb)/temp, 255);
     } else {
-      if (colorY < masterLength/4) {
-        int temp = masterLength/4;
-        int tempb = (int)colorY - 0;
-        stroke(255, (255 * tempb)/temp, 0);
-      } else if (colorY < masterLength/2) {
-        int temp = masterLength/4;
-        if (temp == 0) {
-          temp = 1;
-        }
-        int tempb = (int)colorY - masterLength/4;
-        stroke(127 - (127 * tempb)/temp, 255, (255 * tempb)/temp);
-      } else if (colorY < masterLength*3/4) {
-        int temp = masterLength/4;
-        if (temp == 0) {
-          temp = 1;
-        }
-        int tempb = (int)colorY - masterLength/2;
-        stroke(0, 255 - (255 * tempb)/temp, 255);
-      } else {
-        int temp = masterLength/4;
-        if (temp == 0) {
-          temp = 1;
-        }
-        int tempb = (int)colorY - masterLength*3/4;
-        stroke(255-(127 * tempb)/temp, 0, 255);
+      int temp = masterLength/4;
+      if (temp == 0) {
+        temp = 1;
       }
+      int tempb = (int)colorY - masterLength*3/4;
+      changeStrokeColor(255-(127 * tempb)/temp, 0, 255);
     }
+    
     beginShape();
     vertex(mx+leng/2, my);
     vertex(mx-leng/2, my);
@@ -148,6 +151,30 @@ class STriangle {
       St1.move();
       St2.move();
       St3.move();
+    }
+  }
+  
+  public void changeStrokeColor(int r, int g, int b)
+  {
+    if (shouldChangeColor)
+    {
+      float[] hsbVals = Color.RGBtoHSB(r, g, b, null);
+      hsbVals[0] += colorTimeOffset;
+      while (hsbVals[0] > 1.0)
+        hsbVals[0] -= 1.0;
+        
+      //hsbVals[1] = 2*(hsbVals[1]-hsbVals[0]);
+      //while (hsbVals[1] < 0.5)
+      //  hsbVals[1] += 0.5;
+      
+      
+      Color rgbColor = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
+      
+      stroke(rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue());
+    }
+    else
+    {
+      stroke(r, g, b);
     }
   }
 }

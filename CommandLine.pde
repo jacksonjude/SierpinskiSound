@@ -12,13 +12,13 @@ class CommandLine {
   Boolean holdingShift = false;
   int promptPosition = 0;
 
-  public void show(int soundListLength, float amplitude)
+  public void show(int soundListLength, float amplitude, float colorTimeOffset)
   {
     if (devShowing)
     {
       fill(255);
       textAlign(LEFT);
-      text(selectedAudioInput + "," + selectedAudioOutput + "/" + (soundListLength-1) + "  " + amplitude, 10, 20);
+      text(selectedAudioInput + "," + selectedAudioOutput + "/" + (soundListLength-1) + "  " + amplitude + " " + colorTimeOffset, 10, 20);
       fill(255);
       text("> " + inputCommand.substring(0, promptPosition) + (((frameCount%50 < 50/2 && devEnabled) ? (promptPosition == inputCommand.length() ? "_" : "|") : (promptPosition == inputCommand.length() ? "" : ":")) + inputCommand.substring(promptPosition, inputCommand.length())), 10, 40);
       fill(200, 75, 50);
@@ -95,7 +95,7 @@ class CommandLine {
           maxtri = parseInt(inputCommandValue);
           break;
         case "poscolor":
-          changeColor = boolean(inputCommandValue);
+          shouldChangeColor = boolean(inputCommandValue);
           break;
         case "audioin":
           selectedAudioInput = parseInt(inputCommandValue);
