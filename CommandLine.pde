@@ -6,19 +6,19 @@ class CommandLine {
   boolean devShowing = false;
   boolean devEnabled = false;
 
-  public final String[] commands = {"maxtri","poscolor","audioin","audioout","audiomulti","devicelist","audiopow","start","dev"};
+  public final String[] commands = {"maxtri","poscolor","audioin","audioout","devicelist","start","dev"};
 
   Boolean holdingControl = false;
   Boolean holdingShift = false;
   int promptPosition = 0;
 
-  public void show(int soundListLength, float amplitude, float colorTimeOffset)
+  public void show(int soundListLength, float amplitude, float colorTimeOffset, float framesPerSecond)
   {
     if (devShowing)
     {
       fill(255);
       textAlign(LEFT);
-      text(selectedAudioInput + "," + selectedAudioOutput + "/" + (soundListLength-1) + "  " + amplitude + " " + colorTimeOffset, 10, 20);
+      text(selectedAudioInput + "," + selectedAudioOutput + "/" + (soundListLength-1) + "  " + amplitude + " " + colorTimeOffset + " " + framesPerSecond, 10, 20);
       fill(255);
       text("> " + inputCommand.substring(0, promptPosition) + (((frameCount%50 < 50/2 && devEnabled) ? (promptPosition == inputCommand.length() ? "_" : "|") : (promptPosition == inputCommand.length() ? "" : ":")) + inputCommand.substring(promptPosition, inputCommand.length())), 10, 40);
       fill(200, 75, 50);
@@ -61,17 +61,6 @@ class CommandLine {
     if (keyCode == 188) keyString = ",";
     if (keyCode == 190) keyString = ".";
 
-    /*if (holdingControl)
-    {
-      if (keyString.equals("p"))
-      {
-        String pasteString = cp.pasteString();
-        inputCommand = inputCommand.substring(0, promptPosition) + pasteString + inputCommand.substring(promptPosition, inputCommand.length());
-        promptPosition += pasteString.length();
-      }
-      return;
-    }*/
-
     if (holdingShift)
     {
       if (keyString.equals(";"))
@@ -92,7 +81,7 @@ class CommandLine {
       switch (inputCommandPart.toLowerCase())
       {
         case "maxtri":
-          maxtri = parseInt(inputCommandValue);
+          maxTriangles = parseInt(inputCommandValue);
           break;
         case "poscolor":
           shouldChangeColor = boolean(inputCommandValue);
@@ -102,12 +91,6 @@ class CommandLine {
           break;
         case "audioout":
           selectedAudioOutput = parseInt(inputCommandValue);
-          break;
-        case "audiomulti":
-          //audioMulti = parseFloat(inputCommandValue);
-          break;
-        case "audiopow":
-          //audioPow = parseFloat(inputCommandValue);
           break;
         case "devicelist":
           inputCommandSuccess = arrayToString(soundList);

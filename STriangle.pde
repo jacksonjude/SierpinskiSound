@@ -8,12 +8,16 @@ class STriangle {
   private int leng;
   private int trianglenumt;
   private STriangle St1, St2, St3;
-  public STriangle(int x, int y, int len, int trianglenum) 
+  private float rotationMultiplier;
+  private int maxtri;
+  public STriangle(int x, int y, int len, int trianglenum, int maxtriangles, float rotMult)
   {
     truex = x;
     truey = y;
     leng = len;
     trianglenumt = trianglenum;
+    rotationMultiplier = rotMult;
+    maxtri = maxtriangles;
     my = y + (int)(Math.random()*300 -150);
     mx = x + (int)(Math.random()*300 -150);
     if (my < masterLength/4) {
@@ -54,11 +58,11 @@ class STriangle {
     vertex(x, (float)(y+len/2*Math.sqrt(3)));
     vertex(x+len/2, y);
     endShape();
-    
+
     if (trianglenum < maxtri) {
-      St1 = new STriangle(x - len/4, y, len/2, trianglenum+1);
-      St2 = new STriangle(x, (int)(y+len/4*Math.sqrt(3)), len/2, trianglenum+1);
-      St3 = new STriangle(x+len/4, y, len/2, trianglenum+1);
+      St1 = new STriangle(x - len/4, y, len/2, trianglenum+1, maxtri, rotationMultiplier);
+      St2 = new STriangle(x, (int)(y+len/4*Math.sqrt(3)), len/2, trianglenum+1, maxtri, rotationMultiplier);
+      St3 = new STriangle(x+len/4, y, len/2, trianglenum+1, maxtri, rotationMultiplier);
     }
   }
   public void moveBack(float multi) {
@@ -113,7 +117,7 @@ class STriangle {
       //  changeStrokeColor(255-(127 * tempb)/temp, 0, 255);
       //}
     //} else {
-      
+
     if (colorY < masterLength/4) {
       int temp = masterLength/4;
       int tempb = (int)colorY - 0;
@@ -140,36 +144,58 @@ class STriangle {
       int tempb = (int)colorY - masterLength*3/4;
       changeStrokeColor(255-(127 * tempb)/temp, 0, 255);
     }
-    
+
+    if (shouldRotateAll)
+    {
+      translate(width/2, heightOffset+masterHeight/3);
+      rotate(rotationMultiplier*2*PI*timeOffset);
+      translate(-width/2, -(heightOffset+masterHeight/3));
+    }
+    else if (trianglenumt == 0)
+    {
+      translate(width/2, heightOffset+masterHeight/3);
+      rotate(rotationMultiplier*2*PI*timeOffset/4);
+      translate(-width/2, -(heightOffset+masterHeight/3));
+    }
+
     beginShape();
     vertex(mx+leng/2, my);
     vertex(mx-leng/2, my);
     vertex(mx, (float)(my+leng/2*Math.sqrt(3)));
     vertex(mx+leng/2, my);
     endShape();
+
+    if (shouldRotateAll)
+    {
+      translate(width/2, (heightOffset+masterHeight/3));
+      rotate(rotationMultiplier*-(2*PI*timeOffset));
+      translate(-width/2, -(heightOffset+masterHeight/3));
+    }
+    else if (trianglenumt == 0)
+    {
+      translate(width/2, (heightOffset+masterHeight/3));
+      rotate(rotationMultiplier*-2*PI*timeOffset/4);
+      translate(-width/2, -(heightOffset+masterHeight/3));
+    }
+
     if (trianglenumt < maxtri) {
       St1.move();
       St2.move();
       St3.move();
     }
   }
-  
+
   public void changeStrokeColor(int r, int g, int b)
   {
     if (shouldChangeColor)
     {
       float[] hsbVals = Color.RGBtoHSB(r, g, b, null);
-      hsbVals[0] += colorTimeOffset;
+      hsbVals[0] += timeOffset;
       while (hsbVals[0] > 1.0)
         hsbVals[0] -= 1.0;
-        
-      //hsbVals[1] = 2*(hsbVals[1]-hsbVals[0]);
-      //while (hsbVals[1] < 0.5)
-      //  hsbVals[1] += 0.5;
-      
-      
+
       Color rgbColor = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
-      
+
       stroke(rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue());
     }
     else
