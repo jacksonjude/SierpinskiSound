@@ -35,14 +35,22 @@ float timeOffsetDelta = 0;
 SpinningCircle insideCircle;
 float insideCircleStroke;
 
+Ripple insideRippleController;
+
 int previousWidth;
 int previousHeight;
+
+boolean showingMasterTriangle = true;
+boolean shouldRotateTriangles = false;
+boolean showingSecondaryTriangles = false;
+boolean showingInsideRipple = false;
+boolean showingInsideCircle = false;
 
 public void setup()
 {
   noFill();
   background(255);
-  size(700, 700);
+  fullScreen();
   surface.setResizable(true);
 
   PImage icon = loadImage("icon.png");
@@ -64,6 +72,8 @@ public void createShapes()
 
   insideCircleStroke = ceil(1.0*width/200);
   insideCircle = new SpinningCircle(15, masterHeight/6, insideCircleStroke);
+
+  insideRippleController = new Ripple(masterHeight/4, 225, 1.5);
 }
 
 float heightOffset;
@@ -152,7 +162,7 @@ public void draw()
 
     colorMode(HSB);
     stroke(0, 0);
-    int displayBands = 512;
+    int displayBands = 700;
     for (int i=0; i < displayBands; i++)
     {
       fill(spectrum[i]*255*3, 255, 255);
@@ -162,24 +172,30 @@ public void draw()
     fill(0, 0);
   }
 
+  if (showingSecondaryTriangles)
+    for (STriangle triangle : SecondaryTriangles)
+      triangle.move();
   for (STriangle triangle : SecondaryTriangles)
-  {
-    triangle.move();
-  }
-
-  ellipse(width/2, heightOffset+masterHeight/3, masterHeight/3+1, masterHeight/3+1);
-  ellipse(width/2, heightOffset+masterHeight/3, 2*masterHeight/3+1, 2*masterHeight/3+1);
-  ellipse(width/2, heightOffset+masterHeight/3, 4*masterHeight/3+1, 4*masterHeight/3+1);
-
-  MasterTriangle.move();
-
-  MasterTriangle.moveBack(2);
-  for (STriangle triangle : SecondaryTriangles)
-  {
     triangle.moveBack(2);
+
+  if (showingInsideCircle)
+    ellipse(width/2, heightOffset+masterHeight/3, masterHeight/3+1, masterHeight/3+1);
+
+  if (shouldRotateTriangles)
+  {
+    ellipse(width/2, heightOffset+masterHeight/3, 2*masterHeight/3+1, 2*masterHeight/3+1);
+    ellipse(width/2, heightOffset+masterHeight/3, 4*masterHeight/3+1, 4*masterHeight/3+1);
   }
 
-  insideCircle.move();
+  if (showingInsideRipple)
+    insideRippleController.move();
+
+  if (showingMasterTriangle)
+    MasterTriangle.move();
+  MasterTriangle.moveBack(2);
+
+  if (showingInsideCircle)
+    insideCircle.move();
 }
 
 public void keyPressed() {
@@ -187,10 +203,37 @@ public void keyPressed() {
 }
 
 public void keyReleased() {
-  if (keyCode == SHIFT)
+  if (!cl.devShowing)
   {
-    restartSound();
+    switch (key)
+    {
+      case '0':
+      if (!soundStarted)
+        restartSound();
+      break;
+
+      case '1':
+      showingMasterTriangle = !showingMasterTriangle;
+      break;
+
+      case '2':
+      shouldRotateTriangles = !shouldRotateTriangles;
+      break;
+
+      case '3':
+      showingSecondaryTriangles = !showingSecondaryTriangles;
+      break;
+
+      case '4':
+      showingInsideRipple = !showingInsideRipple;
+      break;
+
+      case '5':
+      showingInsideCircle = !showingInsideCircle;
+      break;
+    }
   }
+
   cl.releasedKey(keyCode);
 }
 

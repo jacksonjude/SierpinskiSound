@@ -151,8 +151,10 @@ class STriangle {
       rotate(rotationMultiplier*2*PI*timeOffset);
       translate(-width/2, -(heightOffset+masterHeight/3));
     }
-    else if (trianglenumt == 0)
+    else if (trianglenumt == 0 && shouldRotateTriangles)
     {
+      //strokeWeight(((triangleRotationMultipliers.length+1)/2-rotationMultiplier)/2);
+      strokeWeight(2);
       translate(width/2, heightOffset+masterHeight/3);
       rotate(rotationMultiplier*2*PI*timeOffset/4);
       translate(-width/2, -(heightOffset+masterHeight/3));
@@ -171,8 +173,9 @@ class STriangle {
       rotate(rotationMultiplier*-(2*PI*timeOffset));
       translate(-width/2, -(heightOffset+masterHeight/3));
     }
-    else if (trianglenumt == 0)
+    else if (trianglenumt == 0 && shouldRotateTriangles)
     {
+      strokeWeight(1);
       translate(width/2, (heightOffset+masterHeight/3));
       rotate(rotationMultiplier*-2*PI*timeOffset/4);
       translate(-width/2, -(heightOffset+masterHeight/3));
@@ -190,9 +193,7 @@ class STriangle {
     if (shouldChangeColor)
     {
       float[] hsbVals = Color.RGBtoHSB(r, g, b, null);
-      hsbVals[0] += timeOffset;
-      while (hsbVals[0] > 1.0)
-        hsbVals[0] -= 1.0;
+      hsbVals[0] += timeOffset % 1.0;
 
       Color rgbColor = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
 
